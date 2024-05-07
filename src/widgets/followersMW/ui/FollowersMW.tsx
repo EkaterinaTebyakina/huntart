@@ -2,25 +2,22 @@ import { FC, useState, useDeferredValue, useMemo } from "react";
 import ModalWindow from "../../../shared/ui/modalWindow/ModalWindow";
 import InterlocutorsList from "../../../shared/ui/interlocutorsList/InterlocutorsList";
 import SearchInput from "../../../shared/ui/searchInput/SearchInput";
+import { IUser } from "../../../entities/User";
 import "./FollowersMW.scss";
 
 
 interface FollowersMWProps {
   onSetModalClose?(): void;
-  userData?: [];
+  userData: IUser[] | null;
 }
 
-export interface IUser {
-    id?:number
-    username?:string
-    avatar?:string
-}
 
 const FollowersMW:FC<FollowersMWProps> = ({userData, onSetModalClose}) => {
 
   //search-block---------------------------------------------------------
 
   const interlocutorsData = userData;
+  console.log(interlocutorsData)
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -36,7 +33,8 @@ const FollowersMW:FC<FollowersMWProps> = ({userData, onSetModalClose}) => {
     if (searchValue === '') {
       return [];
     } else {
-      return interlocutorsData?.filter(user => user?.username.toLocaleLowerCase().indexOf(searchValue.toLocaleLowerCase()) > -1);
+      // return interlocutorsData?.filter(user => user.username.toLocaleLowerCase().indexOf(searchValue.toLocaleLowerCase()) > -1);
+      return interlocutorsData ? interlocutorsData.filter(user => user.username.toLocaleLowerCase().indexOf(searchValue.toLocaleLowerCase()) > -1) : [];
     }
   }
   //end-search-block-----------------------------------------------------

@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import Avatar from "../avatar/Avatar";
 import "./InterlocutorItem.scss";
-import { IUser } from "../followersMW/FollowersMW";
+import { IUser } from "../../../entities/User";
 
 
 const InterlocutorItem:FC<IUser> = ({id, username, avatar}) => {

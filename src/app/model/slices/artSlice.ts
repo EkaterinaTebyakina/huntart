@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSelector, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../../shared/api/axios";
+import { RootState } from "../store";
 
 //ART
 export const fetchArt = createAsyncThunk('art/fetchArt', async (id) => {
@@ -27,6 +28,7 @@ export const fetchComments = createAsyncThunk('art/fetchComments', async (id) =>
 export const fetchNextComments = createAsyncThunk('arts/fetchNextComments', async (args, { getState }) => {
   const state = getState();
   const url = state.art.comments.next.slice(28);
+  // console.log("url", url)
   const { data } = await instance.get(url);
 
   return data;
@@ -130,13 +132,25 @@ const artSlice = createSlice({
       state.comments.items = [];
       state.comments.status = 'error';
     })
+    //fetchNextComments
+    .addCase(fetchNextComments.pending, (state) => {
+      state.comments.status = 'loading';
+    })
+    .addCase(fetchNextComments.fulfilled, (state, action) => {
+      state.comments.items = [...state.comments.items, ...action.payload.results];
+      state.comments.next = action.payload.next;
+      state.comments.status = 'loaded';
+    })
+    .addCase(fetchNextComments.rejected, (state) => {
+      state.comments.status = 'error';
+    })
 
     //fetchComment
     .addCase(fetchComment.pending, (state) => {
       state.comments.status = 'loading';
     })
     .addCase(fetchComment.fulfilled, (state, action) => {
-      state.comments.items = [...state.comments.items, action.payload];
+      state.comments.items = [action.payload, ...state.comments.items];
       state.comments.status = 'loaded';
     })
     .addCase(fetchComment.rejected, (state) => {
@@ -148,18 +162,23 @@ const artSlice = createSlice({
 
 export const artReducer = artSlice.reducer;
 
-export const selectId = (state) => state?.art?.data?.id;
-export const selectUsername = (state) => state?.art?.data?.author?.username;
-export const selectAuthorId = (state) => state?.art?.data?.author?.id;
-export const selectUrl = (state) => state?.art?.data?.image;
-export const selectTags = (state) => state?.art?.data?.tags;
-export const selectDescription = (state) => state?.art?.data?.description;
-export const selectViews = (state) => state?.art?.data?.views;
-export const selectCountLikes = (state) => state?.art?.data?.count_likes;
-export const selectIsLiked = (state) => state?.art?.data?.liked_authorized_user;
+const selectBase = createSelector(
+  (state: RootState) => state,
+  (state) => state.art
+)
 
-export const selectStatus = (state) => state.art.status;
+export const selectId = createSelector(selectBase, state => state.data?.id);
+export const selectUsername = createSelector(selectBase, state => state.data?.author?.username);
+export const selectAuthorId = createSelector(selectBase, state => state.data?.author?.id);
+export const selectUrl = createSelector(selectBase, state => state.data?.image);
+export const selectTags = createSelector(selectBase, state => state?.data?.tags);
+export const selectDescription = createSelector(selectBase, state => state?.data?.description);
+export const selectViews = createSelector(selectBase, state => state?.data?.views);
+export const selectCountLikes = createSelector(selectBase, state => state?.data?.count_likes);
+export const selectIsLiked = createSelector(selectBase, state => state?.data?.liked_authorized_user);
 
-export const selectComments = (state) => state?.art?.comments?.items;
+export const selectStatus = createSelector(selectBase, state => state.status);
 
-// export const { setLike } = artSlice.actions;
+export const selectComments = createSelector(selectBase, state => state?.comments?.items);
+
+export const selectCommNext = createSelector(selectBase, state => state?.comments?.next);

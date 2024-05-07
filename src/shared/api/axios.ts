@@ -30,13 +30,13 @@ instance.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
-        const response = await axios.post('/users/token/refresh/', { refreshToken });
-        const { token } = response.data;
+        const response = await axios.post('http://localhost:8000/api/v1/users/token/refresh/', { refresh: refreshToken });
+        const { access } = response.data;
 
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', access);
 
         // Retry the original request with the new token
-        originalRequest.headers.Authorization = `Bearer ${token}`;
+        originalRequest.headers.Authorization = `Bearer ${access}`;
         return axios(originalRequest);
       } catch (error) {
         logout();

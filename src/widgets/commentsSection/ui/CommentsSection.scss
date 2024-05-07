@@ -38,15 +38,15 @@
   &__comments-list {
     overflow-y: auto;
     display: flex;
-    // flex-direction: column-reverse;
-    // justify-content: end;
+    flex-direction: column-reverse;
+    justify-content: end;
 
     align-items: flex-start;
 
     @media (min-width: 820px) {
       & {
-        flex-direction: column;
-        justify-content: start;
+        // flex-direction: column;
+        // justify-content: start;
       }
     }
   }

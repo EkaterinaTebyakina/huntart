@@ -1,14 +1,10 @@
 import { FC } from "react";
 import InterlocutorItem from "../interlocutorItem/InterlocutorItem";
+import { IUser } from "../../../entities/User";
 import "./InterlocutorLists.scss";
 
-export interface IUser {
-  id?:number
-  username?:string
-}
-
 interface InterlocutorsListProps {
-  interlocutors?: IUser[];
+  interlocutors: IUser[] | null;
 }
 
 const InterlocutorsList:FC<InterlocutorsListProps> = ({interlocutors}) => {
@@ -27,7 +23,6 @@ const InterlocutorsList:FC<InterlocutorsListProps> = ({interlocutors}) => {
         interlocutors?.length > 0 ? renderItems() : 
         <div style={{margin: "50px auto", textAlign: "center"}}>Список пуст</div>
       }
-      {/* {renderItems()} */}
     </ul>
   )
 }

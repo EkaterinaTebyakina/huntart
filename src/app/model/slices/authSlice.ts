@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSelector, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../../shared/api/axios";
-import { IUserState } from "../../../entities/User";
+import { IUserState } from "../../../entities/UserState";
+import { RootState } from "../store";
 
 export const fetchMe = createAsyncThunk('auth/fetchMe', async () => {
   const { data } = await instance.get('/users/im/');
@@ -107,15 +108,30 @@ const authSlice = createSlice({
 
 export const authReducer = authSlice.reducer;
 
-export const selectStatus = (state) => state?.auth?.status;
-export const selectArtStatus = (state) => state.auth.artStatus;
-export const selectIsAuth = (state) => state.auth?.status === 'loaded';//Boolean(state.auth.data);
-export const selectSubscriptionsCount = (state) => state?.auth?.data?.subscriptions_count;
-export const selectMyId = (state) => state.auth?.data?.id;
-export const selectMyUsername = (state) => state.auth?.data?.username;
-export const selectSubscriptions = (state) => state.auth.data?.subscriptions;
-export const selectProfileStatus = (state) => state.auth.profileStatus;
-export const selectMyDescription = (state) => state.auth.data.profile?.description;
+const selectBase = createSelector(
+  (state: RootState) => state,
+  (state) => state.auth
+)
+
+export const selectStatus = createSelector(selectBase, state => state.status);
+export const selectArtStatus = createSelector(selectBase, state => state.artStatus);
+export const selectIsAuth = createSelector(selectBase, state => state.status === 'loaded');
+export const selectSubscriptionsCount = createSelector(selectBase, state => state.data?.subscriptions_count);
+export const selectMyId = createSelector(selectBase, state => state.data?.id);
+export const selectMyUsername = createSelector(selectBase, state => state.data?.username);
+export const selectSubscriptions = createSelector(selectBase, state => state.data?.subscriptions);
+export const selectProfileStatus = createSelector(selectBase, state => state.profileStatus);
+export const selectMyDescription = createSelector(selectBase, state => state.data.profile?.description);
+
+// export const selectStatus = (state) => state?.auth?.status;
+// export const selectArtStatus = (state) => state.auth.artStatus;
+// export const selectIsAuth = (state) => state.auth?.status === 'loaded';//Boolean(state.auth.data);
+// export const selectSubscriptionsCount = (state) => state?.auth?.data?.subscriptions_count;
+// export const selectMyId = (state) => state.auth?.data?.id;
+// export const selectMyUsername = (state) => state.auth?.data?.username;
+// export const selectSubscriptions = (state) => state.auth.data?.subscriptions;
+// export const selectProfileStatus = (state) => state.auth.profileStatus;
+// export const selectMyDescription = (state) => state.auth.data.profile?.description;
 // export const selectIsSubcription = (state) => state.auth?.data?.isMySubscription;
 
 export const { logout, resetProfileStatus, resetArtStatus } = authSlice.actions;

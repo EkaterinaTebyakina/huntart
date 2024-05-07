@@ -1,25 +1,25 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCheck, faStar, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCheck, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import "./UserInfoSection.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { fetchSubscribe, fetchUnsubscribe, selectAvatar, selectDescription, selectFollowersCount, selectStatus, selectUserFollowers, selectUserId, selectUserSubscriptions, selectUsername, subscribe, unsubscribe } from "../../../app/model/slices/userSlice";
-import { useNavigate } from "react-router-dom";
 import { selectIsAuth, selectMyId, selectMyUsername, selectSubscriptions } from "../../../app/model/slices/authSlice";
+import { IUser } from "../../../entities/User";
 
 interface UserInfoSectionProps {
   isMine?: boolean;
   userId?: string;
   isMySubscription?: boolean;
-  onSetModalOpen?(): void;
+  // onSetModalOpen?(): void;
   onSetPublishModalOpen?(): void;
-  onSetFollowersModalOpen?(): [] | void;
+  onSetFollowersModalOpen(data : IUser[] | null): [] | void;
   onSetProfileModalOpen?(): void;
 }
 
 
-const UserInfoSection:FC<UserInfoSectionProps> = ({userId, isMine, onSetModalOpen, onSetPublishModalOpen, onSetFollowersModalOpen, onSetProfileModalOpen}) => {
+const UserInfoSection:FC<UserInfoSectionProps> = ({userId, isMine, onSetPublishModalOpen, onSetFollowersModalOpen, onSetProfileModalOpen}) => {
   
   const btnRef = useRef(null);
   const subscriptions = useSelector(selectSubscriptions);

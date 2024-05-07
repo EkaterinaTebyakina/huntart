@@ -1,6 +1,6 @@
 import { createSelector, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../../shared/api/axios";
-import { IUserState } from "../../../entities/User";
+import { IUserState } from "../../../entities/UserState";
 import { RootState } from "../store";
 
 //USER

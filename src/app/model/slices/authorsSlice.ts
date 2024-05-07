@@ -1,5 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSelector, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../../shared/api/axios";
+import { RootState } from "../store";
+import { IUser } from "../../../entities/User";
 
 export const fetchAuthors = createAsyncThunk('authors/fetchAuthors', async (username) => {
   const { data } = await instance.get(`/users/search/`, { 
@@ -19,7 +21,13 @@ export const fetchNewPage = createAsyncThunk('authors/fetchNewPage', async (args
   return data;
 })
 
-const initialState = {
+interface IInitialState {
+  authors: IUser[]
+  status: string
+  next: string
+}
+
+const initialState : IInitialState = {
   authors: [],
   status: 'idle',
   next: '',
@@ -63,5 +71,10 @@ const authorsSlice = createSlice({
 
 export const authorsReducer = authorsSlice.reducer;
 
-export const selectAuthorsUsernames = (state) => state.authors.authors.map(item => item.username);
-export const selectAuthors = (state) => state.authors.authors;
+const selectBase = createSelector(
+  (state: RootState) => state,
+  (state) => state.authors
+)
+
+export const selectAuthorsUsernames = createSelector(selectBase, state => state.authors.map(item => item.username));
+export const selectAuthors = createSelector(selectBase, state => state.authors);

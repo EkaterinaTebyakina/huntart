@@ -16,16 +16,7 @@ import FollowersMW from "../../widgets/followersMW/ui/FollowersMW";
 import { fetchNewPage, fetchUserArts, selectNext } from "../../app/model/slices/artsSlice";
 import SettingProfileMW from "../../widgets/settingProfileMW/ui/SettingProfileMW";
 import PublishMW from "../../widgets/publishMW/ui/PublishMW";
-
-// type User = {
-//   id: string;
-//   userName: string;
-//   followers: number[];
-//   following: number[];
-//   rating: number;
-//   wallpaper: string;
-//   arts: [{id: number, src: string}]
-// }
+import { IUser } from "../../entities/User";
 
 export const UserPage = () => {
 
@@ -45,7 +36,7 @@ export const UserPage = () => {
   useEffect(() => {
     if (isAuth) {
       setIsMine((myId == userId) ? true : false);
-      setIsMySubscription(!!subscriptions?.find(item => item.id == userId));
+      setIsMySubscription(!!subscriptions?.find((item : IUser) => item.id == userId));
       setMenuLinks([{url:"/", name:"Главная"}, {url:"/", name:"Выход"}]);
     } else {
       setMenuLinks([{url:"/", name:"Главная"}, {url:"/authorization", name:"Вход"}, {url:"/registration", name:"Регистрация"}]);
@@ -88,15 +79,15 @@ export const UserPage = () => {
     setModalClose(true);
   }
 
-  const [priceListModalClose, setPriceListModalClose] = useState<boolean>(true);
+  // const [priceListModalClose, setPriceListModalClose] = useState<boolean>(true);
 
-  const onSetPriceListModalOpen = () => {
-    setPriceListModalClose(false);
-  }
+  // const onSetPriceListModalOpen = () => {
+  //   setPriceListModalClose(false);
+  // }
 
-  const onSetPriceListModalClose = () => {
-    setPriceListModalClose(true);
-  }
+  // const onSetPriceListModalClose = () => {
+  //   setPriceListModalClose(true);
+  // }
 
 
   const [publishModalClose, setPublishModalClose] = useState<boolean>(true);
@@ -111,10 +102,11 @@ export const UserPage = () => {
 
 
   const [followersModalClose, setFollowersModalClose] = useState<boolean>(true);
-  const [followers, setFollower] = useState([]);
+  const [followers, setFollowers] = useState<IUser[] | null>([]);
 
-  const onSetFollowersModalOpen = (data) => {
-    setFollower(data);
+  const onSetFollowersModalOpen = (data : IUser[] | null) => {
+    setFollowers(data);
+    console.log(data)
     setFollowersModalClose(false);
   }
 
@@ -141,7 +133,7 @@ export const UserPage = () => {
         <UserInfoSection isMine={isMine} 
                          userId={userId}
                          isMySubscription={isMySubscription}
-                         onSetModalOpen={onSetPriceListModalOpen}
+                        //  onSetModalOpen={onSetPriceListModalOpen}
                          onSetPublishModalOpen={onSetPublishModalOpen} 
                          onSetFollowersModalOpen={onSetFollowersModalOpen} 
                          onSetProfileModalOpen={onSetProfileModalOpen}/>

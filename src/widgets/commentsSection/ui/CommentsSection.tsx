@@ -1,12 +1,13 @@
-import { FC, useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef, useCallback } from "react";
 import Chat from "../../../shared/ui/chat/Chat";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { fetchComment, fetchComments, selectComments, selectId } from "../../../app/model/slices/artSlice";
+import { fetchComment, fetchComments, fetchNextComments, selectCommNext, selectComments, selectId } from "../../../app/model/slices/artSlice";
 import { NavLink } from "react-router-dom";
 import "./CommentsSection.scss";
 import { selectIsAuth, selectMyId } from "../../../app/model/slices/authSlice";
 import clsx from "clsx";
+// import { useBottomScrollListener } from "react-bottom-scroll-listener";
 
 interface CommentsSectionProps {
   height?: string;
@@ -25,20 +26,49 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
   const isAuth = useSelector(selectIsAuth);
   const myId = useSelector(selectMyId);
 
+  const commNext = useSelector(selectCommNext);
+  // console.log("commNext", commNext)
+
   // useEffect(() => {
   //   // dispatch(fetchComments(artId));
   // }, [])
 
   //Scroll behaviour
+  // const scrollRef = useBottomScrollListener(() => console.log("scroll bottom"))
+  const scrollRef = useRef(null);
   const msgsEndRef = useRef(null)
 
   const scrollToBottom = () => {
     msgsEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
+  const handleScroll = useCallback((e) => {
+    let scrollBottom = Math.floor(e.target.scrollHeight + e.target.scrollTop - e.target.clientHeight);
+
+    // console.log(scrollBottom)
+    
+    if (scrollBottom === 0) {
+      console.log('scrolled to top')
+      // console.log(commNext)
+      if (commNext) {
+        dispatch(fetchNextComments())
+      } else {
+        console.log('доскроллили до конца');
+      }
+    }
+  }, [commNext]);
+
+  useEffect(() => {
+    scrollRef.current?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      scrollRef.current?.removeEventListener('scroll', handleScroll);
+    };
+  }, [commNext]);
+
   useEffect(() => {
     scrollToBottom()
-  }, [comments]);
+  }, []);
 
   //Input behaviour
   const [message, setMessage] = useState('');
@@ -52,6 +82,7 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
       if (message) {
         dispatch(fetchComment({id: artId, text: message}))
         setMessage('')
+        setTimeout(scrollToBottom, 500)
       } 
     }
   };
@@ -70,7 +101,8 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
   const renderComments = () => {
 
       return (
-        <ul className="chat__comments-list">
+        <ul className="chat__comments-list" ref={scrollRef}>
+          <div ref={msgsEndRef}/>
           {
             comments?.map((comment) => {
               const dateStr = comment.created_at;
@@ -97,17 +129,13 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
               )
             })
           }
-          <div ref={msgsEndRef}/>
+          {/* <div ref={msgsEndRef}/> */}
         </ul>
       )
   }
 
   return (
     <div className="comments">
-      {/* <div className="chat" style={{height: height}}>
-        {renderInput()}
-        {renderComments()}
-      </div> */}
       <Chat renderInput={renderInput} renderMsgs={() => renderComments()} height={height} data={comments}/>
     </div>
   )

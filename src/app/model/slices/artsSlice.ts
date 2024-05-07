@@ -1,14 +1,31 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSelector, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../../shared/api/axios";
+import { RootState } from "../store";
 
 const setParams = (author: string, tags: string[]) => {
-  let params: {[k: string]: any} = {page_size: 15};
+  // let params: {[k: string]: any} = {page_size: 15};
+  // if (author != '') {
+  //   console.log(author)
+  //   params.author = author;
+  // }
+  // // console.log(tags)
+  // if (tags.length > 0) {
+  //   console.log(tags)
+  //   // params.tags = JSON.stringify(tags);
+  //   // params.tags = tags;
+  // }
+
+  const params = new URLSearchParams();
+
   if (author != '') {
-    params.author = author;
+    console.log(author)
+    params.append('author', author);
   }
+
   if (tags.length > 0) {
-    params.tags = tags;
+    tags.forEach(tag => params.append('tags', tag))
   }
+
   return params;
 }
 
@@ -87,6 +104,7 @@ const artsSlice = createSlice({
       state.search.username = action.payload;
     },
     setSearchTags: (state, action) => {
+      // console.log('payload', action.payload)
       state.search.tags = action.payload;
     }
   },
@@ -167,9 +185,14 @@ const artsSlice = createSlice({
 
 export const artsReducer = artsSlice.reducer;
 
-export const selectStatus = (state) => state?.arts?.arts?.status
-export const selectNext = (state) => state?.arts?.arts?.next
-export const selectFeedName = (state) => state?.arts?.feedName
-export const selectSearchUsername = (state) => state.arts.search.username
+const selectBase = createSelector(
+  (state: RootState) => state,
+  (state) => state.arts
+)
+
+export const selectStatus = createSelector(selectBase, state => state?.arts?.status);
+export const selectNext = createSelector(selectBase, state => state?.arts?.next);
+export const selectFeedName = createSelector(selectBase, state => state?.feedName);
+export const selectSearchUsername = createSelector(selectBase, state => state.search.username);
 
 export const {setFeedName, setSearchUsername, setSearchTags} = artsSlice.actions;

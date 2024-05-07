@@ -50,13 +50,24 @@ const FiltersField = () => {
 
   const {register, handleSubmit, formState: {errors}} = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    // console.log(selectedFile)
-    // console.log(data)
-    const tagsWithoutExcessSpaces = data.tags.replace(/\s+/g, ' ').trim();
-    const tagsArray = tagsWithoutExcessSpaces.split(' ');
-    dispatch(setSearchTags(tagsArray))
-  };
+  // const onSubmit: SubmitHandler<Inputs> = (data) => {
+  //   // console.log(selectedFile)
+  //   // console.log(data)
+  //   const tagsWithoutExcessSpaces = data.tags.replace(/\s+/g, ' ').trim();
+  //   const tagsArray = tagsWithoutExcessSpaces.split(' ');
+  //   dispatch(setSearchTags(tagsArray))
+  // };
+
+  const onSetTags = (e : InputEvent) => {
+    const tags = e?.target?.value;
+    if (tags?.length > 0) {
+      const tagsWithoutExcessSpaces = e?.target?.value?.replace(/\s+/g, ' ').trim();
+      const tagsArray = tagsWithoutExcessSpaces.split(' ');
+      dispatch(setSearchTags(tagsArray))
+    } else {
+      dispatch(setSearchTags([]))
+    }
+  }
 
   const feedName = useSelector(selectFeedName);
   
@@ -87,16 +98,19 @@ const FiltersField = () => {
                       isPopupOpen={isPopupOpen}
                       placeholder="Введите имя автора"/>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="filters-field__form">
+        {/* <form onSubmit={handleSubmit(onSubmit)} className="filters-field__form"> */}
           <input
             className="filters-field__tags-input"
             type="text" 
             placeholder="#тег #другой_тег" 
-            {...register( "tags", {pattern: {value: /^((\#[^\s\#]+\_*)+\s*)+$/g, message: "Текст должен соответствовать шаблону: #название_тега"}})}
+            // onChangeText={(e) => onSetTags(e)}
+            {...register( "tags", {
+              onChange: (e) => onSetTags(e),
+              pattern: {value: /^((\#[^\s\#]+\_*)+\s*)+$/g, message: "Текст должен соответствовать шаблону: #название_тега"}})}
             aria-invalid={errors.tags ? "true" : "false"} 
           />
           {errors.tags && <p role="alert"  className="alert-msg">{errors.tags.message}</p>}
-        </form>
+        {/* </form> */}
 
         <button className="filters-field__btn" onClick={onSearch}>Найти</button>
         
