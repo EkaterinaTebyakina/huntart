@@ -4,8 +4,16 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  // gap: 10px;
+  padding: 6px 16px;
+  justify-content: space-between;
+}
+
+.interlocutor__username__wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 10px;
-  padding: 6px;
 }
 
 .interlocutor__username {
@@ -16,4 +24,15 @@
   &:hover, &:focus {
     text-decoration: underline;
   }
+}
+
+.msg_indicator {
+  // background-color: $clr-yellow;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.msg_indicator--active {
+  background-color: $clr-red;
 }

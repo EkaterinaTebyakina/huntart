@@ -7,6 +7,7 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { fetchSubscribe, fetchUnsubscribe, selectAvatar, selectDescription, selectFollowersCount, selectStatus, selectUserFollowers, selectUserId, selectUserSubscriptions, selectUsername, subscribe, unsubscribe } from "../../../app/model/slices/userSlice";
 import { selectIsAuth, selectMyId, selectMyUsername, selectSubscriptions } from "../../../app/model/slices/authSlice";
 import { IUser } from "../../../entities/User";
+import { useNavigate } from "react-router-dom";
 
 interface UserInfoSectionProps {
   isMine?: boolean;
@@ -21,6 +22,7 @@ interface UserInfoSectionProps {
 
 const UserInfoSection:FC<UserInfoSectionProps> = ({userId, isMine, onSetPublishModalOpen, onSetFollowersModalOpen, onSetProfileModalOpen}) => {
   
+  const navigate = useNavigate();
   const btnRef = useRef(null);
   const subscriptions = useSelector(selectSubscriptions);
   const [isMySubscription, setIsMySubscription] = useState(false);
@@ -109,7 +111,7 @@ const UserInfoSection:FC<UserInfoSectionProps> = ({userId, isMine, onSetPublishM
           </>
           :
           <>
-            <button className="message-btn">Написать пользователю</button>
+            <button className="message-btn" onClick={() => navigate(`/messenger/${userId}`)}>Написать пользователю</button>
             {/* <button className="subscribe-btn">Подписаться</button> */}
           </>}
           

@@ -4,6 +4,8 @@ import { artReducer } from "./slices/artSlice";
 import { authReducer } from "./slices/authSlice"
 import { userReducer } from "./slices/userSlice";
 import { authorsReducer } from "./slices/authorsSlice";
+import { chatsReducer } from "./slices/chatsSlice";
+import { msgsReducer } from "./slices/msgsSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
     auth: authReducer,
     user: userReducer,
     authors: authorsReducer,
+    chats: chatsReducer,
+    msgs: msgsReducer,
   }
 })
 

@@ -34,12 +34,14 @@ interface IState {
   status: string
   profileStatus: string
   artStatus: string
+  isAuth: boolean
 }
 const initialState: IState = {
   data: initialUser,
   status: 'loading',
   profileStatus: 'idle',
-  artStatus: 'idle'
+  artStatus: 'idle',
+  isAuth: false
 }
 
 const authSlice = createSlice({
@@ -71,14 +73,17 @@ const authSlice = createSlice({
       .addCase(fetchMe.pending, (state) => {
         state.data = initialUser;
         state.status = 'loading';
+        state.isAuth = false
       })
       .addCase(fetchMe.fulfilled, (state, action) => {
         state.data = action.payload;
         state.status = 'loaded';
+        state.isAuth = true
       })
       .addCase(fetchMe.rejected, (state) => {
         state.data = initialUser;
         state.status = 'error';
+        state.isAuth = false
       })
 
       //fetchProfile
@@ -115,7 +120,7 @@ const selectBase = createSelector(
 
 export const selectStatus = createSelector(selectBase, state => state.status);
 export const selectArtStatus = createSelector(selectBase, state => state.artStatus);
-export const selectIsAuth = createSelector(selectBase, state => state.status === 'loaded');
+export const selectIsAuth = createSelector(selectBase, state => state.isAuth);
 export const selectSubscriptionsCount = createSelector(selectBase, state => state.data?.subscriptions_count);
 export const selectMyId = createSelector(selectBase, state => state.data?.id);
 export const selectMyUsername = createSelector(selectBase, state => state.data?.username);

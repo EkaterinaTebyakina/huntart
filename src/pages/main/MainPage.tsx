@@ -27,7 +27,7 @@ const MainPage = () => {
 
   useEffect(() => {
     if (isAuth) {
-      setMenuLinks([{url:`/users/${myId}`, name:"Профиль"}, {url:"/", name:"Выход"}]);
+      setMenuLinks([{url:`/users/${myId}`, name:"Профиль"}, {url:"/messenger/id", name:"Сообщения"}, {url:"/", name:"Выход"}]);
       setFeedsNames(["новые работы", "популярное", "подписки"]);
     } else {
       setMenuLinks([{url:"/authorization", name:"Вход"}, {url:"/registration", name:"Регистрация"}]);

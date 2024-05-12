@@ -47,7 +47,7 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
 
     // console.log(scrollBottom)
     
-    if (scrollBottom === 0) {
+    if (scrollBottom <= 0) {
       console.log('scrolled to top')
       // console.log(commNext)
       if (commNext) {

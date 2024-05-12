@@ -37,7 +37,7 @@ export const UserPage = () => {
     if (isAuth) {
       setIsMine((myId == userId) ? true : false);
       setIsMySubscription(!!subscriptions?.find((item : IUser) => item.id == userId));
-      setMenuLinks([{url:"/", name:"Главная"}, {url:"/", name:"Выход"}]);
+      setMenuLinks([{url:"/", name:"Главная"}, {url:"/messenger/id", name:"Сообщения"}, {url:"/", name:"Выход"}]);
     } else {
       setMenuLinks([{url:"/", name:"Главная"}, {url:"/authorization", name:"Вход"}, {url:"/registration", name:"Регистрация"}]);
     }

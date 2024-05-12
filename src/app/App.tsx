@@ -1,5 +1,5 @@
-import { createBrowserRouter, RouterProvider, } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { createBrowserRouter, RouterProvider, redirect, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { useEffect } from "react";
 
@@ -9,35 +9,55 @@ import ErrorComponent from "../shared/ui/ErrorComponent";
 import MainPage from "../pages/main/MainPage";
 import AuthPage from "../pages/authorization/AuthPage";
 import RegisterPage from "../pages/registration/RegisterPage";
-import { fetchMe } from "./model/slices/authSlice";
+import { MessengerPage } from "../pages/messenger/MessengerPage";
+import { fetchMe, selectIsAuth, selectStatus } from "./model/slices/authSlice";
 import { UserPage } from "../pages/user/UserPage";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainPage/>,
-    errorElement: <ErrorComponent/>,
-  },
-  {
-    path: "/authorization",
-    element: <AuthPage/>,
-    errorElement: <ErrorComponent/>,
-  },
-  {
-    path: "/registration",
-    element: <RegisterPage/>,
-    errorElement: <ErrorComponent/>,
-  },
-  {
-    path: "users/:userId",
-    element: <UserPage/>,
-    errorElement: <ErrorComponent/>,
-  },
-]);
-
+import { Messenger } from "../widgets/messenger/ui/Messenger";
+import useWebSocket from "react-use-websocket";
+import { SOCKET_URL } from "../shared/api/useChatWebsocket";
+  
 function App() {
-  const dispatch = useDispatch<ThunkDispatch>();
+  const isAuth = useSelector(selectIsAuth)
+  const status = useSelector(selectStatus)
+  // console.log("isAuth", isAuth)
+  // console.log("status", status)
 
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <MainPage/>,
+      errorElement: <ErrorComponent/>,
+    },
+    {
+      path: "/authorization",
+      element: <AuthPage/>,
+      errorElement: <ErrorComponent/>,
+    },
+    {
+      path: "/registration",
+      element: <RegisterPage/>,
+      errorElement: <ErrorComponent/>,
+    },
+    {
+      path: "/users/:userId",
+      element: <UserPage/>,
+      errorElement: <ErrorComponent/>,
+    },
+    {
+      path: "/messenger",
+      element: (!isAuth && status != "loading") ? <Navigate to="/authorization" replace={true}/> : <MessengerPage/>,
+      errorElement: <ErrorComponent/>,
+      children: [
+        {
+          path: ":userId",
+          element: <Messenger />,
+        },
+      ],
+    },
+  ]);
+
+  const dispatch = useDispatch<ThunkDispatch>();
+  
   useEffect(() => {
     dispatch(fetchMe());
   }, [])
