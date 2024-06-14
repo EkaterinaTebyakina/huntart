@@ -3,19 +3,10 @@ import instance from "../../../shared/api/axios";
 import { RootState } from "../store";
 
 const setParams = (author: string, tags: string[]) => {
-  // let params: {[k: string]: any} = {page_size: 15};
-  // if (author != '') {
-  //   console.log(author)
-  //   params.author = author;
-  // }
-  // // console.log(tags)
-  // if (tags.length > 0) {
-  //   console.log(tags)
-  //   // params.tags = JSON.stringify(tags);
-  //   // params.tags = tags;
-  // }
 
   const params = new URLSearchParams();
+
+  params.append('page_size', '15')
 
   if (author != '') {
     console.log(author)

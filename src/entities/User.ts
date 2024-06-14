@@ -3,4 +3,5 @@ export interface IUser {
   username: string
   avatar?: string
   has_unread_messages?: boolean
+  active?: boolean
 }

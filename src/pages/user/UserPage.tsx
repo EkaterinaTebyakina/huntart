@@ -37,11 +37,16 @@ export const UserPage = () => {
     if (isAuth) {
       setIsMine((myId == userId) ? true : false);
       setIsMySubscription(!!subscriptions?.find((item : IUser) => item.id == userId));
-      setMenuLinks([{url:"/", name:"Главная"}, {url:"/messenger/id", name:"Сообщения"}, {url:"/", name:"Выход"}]);
+      if (myId == userId) {
+        setMenuLinks([{url:"/", name:"Главная"}, {url:"/messenger/id", name:"Сообщения"}, {url:"/", name:"Выход"}]);
+      } else {
+        setMenuLinks([{url:"/", name:"Главная"}, {url:`/users/${myId}`, name:"Профиль"}, {url:"/messenger/id", name:"Сообщения"}, {url:"/", name:"Выход"}]);
+      }
+      
     } else {
       setMenuLinks([{url:"/", name:"Главная"}, {url:"/authorization", name:"Вход"}, {url:"/registration", name:"Регистрация"}]);
     }
-  }, [isAuth, subscriptions])
+  }, [isAuth, subscriptions, myId, userId])
 
 
   //modal-block----------------------------------------------------------
@@ -53,11 +58,11 @@ export const UserPage = () => {
     }
 
     return () => clearAllBodyScrollLocks();
-   }, []);
+   }, [userId]);
 
   const [modalClose, setModalClose] = useState<boolean>(true);
   const [imgId, setImgId] = useState<number>();
-  const debounceImgId = useDeferredValue(imgId);
+  // const debounceImgId = useDeferredValue(imgId);
   const modalRef = useRef<HTMLDivElement>(null);
  
   useEffect(() => {
@@ -106,7 +111,7 @@ export const UserPage = () => {
 
   const onSetFollowersModalOpen = (data : IUser[] | null) => {
     setFollowers(data);
-    console.log(data)
+    // console.log(data)
     setFollowersModalClose(false);
   }
 
@@ -142,7 +147,7 @@ export const UserPage = () => {
         <Gallery onSetModalOpen={onSetModalOpen}/>
         {modalClose ? null : 
           <div ref={modalRef}>
-            <ArtInfoMW imgId={debounceImgId} onSetModalClose={onSetModalClose}/>
+            <ArtInfoMW imgId={imgId} onSetModalClose={onSetModalClose}/>
           </div>
         }
         {followersModalClose ? null : <FollowersMW userData={followers} onSetModalClose={onSetFollowersModalClose}/>}

@@ -3,7 +3,7 @@
 .auth-wrapper {
   @extend %base-elem-styles;
   width: 80%;
-  min-width: 288px;
+  // min-width: 500px;
   margin: 0 auto;
   padding: 20px;
   border-radius: 20px;
@@ -36,6 +36,32 @@
       width: 240px;
     }
   }
+
+  @media (max-width: 480px) {
+    div {
+      // text-align: center;
+      // margin: 0 auto;
+      padding: 10px;
+      // @extend %flex-row-container;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: start;
+    
+      label {
+        padding-right: 10px;
+        text-align: left;
+      }
+    
+      input {
+        padding: 8px;
+        @extend %base-elem-styles;
+        border-radius: 10px;
+        width: 240px;
+      }
+    }
+  }
 }
 
 .alert-msg {
@@ -62,6 +88,17 @@
     
     h1 {
       font-size: 24px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-wrapper {
+    width: 320px;
+    // background-color: aquamarine;
+    
+    h1 {
+      font-size: 20px;
     }
   }
 }

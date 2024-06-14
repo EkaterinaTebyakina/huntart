@@ -1,5 +1,6 @@
 import Header from "../../widgets/header/ui/Header";
 import RegisterForm from "../../widgets/registerForm/ui/RegisterForm";
+import "./RegisterPage.scss";
 
 const RegisterPage = () => {
 
@@ -8,7 +9,7 @@ const RegisterPage = () => {
       <header className="header">
         <Header menuLinks={[{url:"/", name:"Главная"}, {url:"/authorization", name:"Авторизация"}]}/>
       </header>
-      <main className="main">
+      <main className="main_auth">
         <RegisterForm/>
       </main>
     </>

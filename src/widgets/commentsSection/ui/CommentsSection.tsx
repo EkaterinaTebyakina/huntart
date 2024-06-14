@@ -2,7 +2,7 @@ import { FC, useEffect, useState, useRef, useCallback } from "react";
 import Chat from "../../../shared/ui/chat/Chat";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { fetchComment, fetchComments, fetchNextComments, selectCommNext, selectComments, selectId } from "../../../app/model/slices/artSlice";
+import { fetchComment, fetchComments, fetchNextComments, selectCommNext, selectCommStatus, selectComments, selectId } from "../../../app/model/slices/artSlice";
 import { NavLink } from "react-router-dom";
 import "./CommentsSection.scss";
 import { selectIsAuth, selectMyId } from "../../../app/model/slices/authSlice";
@@ -10,6 +10,7 @@ import clsx from "clsx";
 // import { useBottomScrollListener } from "react-bottom-scroll-listener";
 
 interface CommentsSectionProps {
+  artId?: string;
   height?: string;
   placeholder?: string;
 }
@@ -17,16 +18,17 @@ interface CommentsSectionProps {
 const STANDARD_HEIGHT = "450px"//"506px"
 const DEFAULT_PLACEHOLDER = "Введите комментарий..."
 
-const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, placeholder=DEFAULT_PLACEHOLDER}) => {
+const CommentsSection:FC<CommentsSectionProps> = ({artId, height=STANDARD_HEIGHT, placeholder=DEFAULT_PLACEHOLDER}) => {
 
   const dispatch = useDispatch<ThunkDispatch>();
 
-  const artId = useSelector(selectId);
+  // const artId = useSelector(selectId);
   const comments = useSelector(selectComments);
   const isAuth = useSelector(selectIsAuth);
   const myId = useSelector(selectMyId);
 
   const commNext = useSelector(selectCommNext);
+  const status = useSelector(selectCommStatus);
   // console.log("commNext", commNext)
 
   // useEffect(() => {
@@ -47,9 +49,9 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
 
     // console.log(scrollBottom)
     
-    if (scrollBottom <= 0) {
+    if (scrollBottom <= 4) {
       console.log('scrolled to top')
-      // console.log(commNext)
+      console.log(commNext)
       if (commNext) {
         dispatch(fetchNextComments())
       } else {
@@ -67,8 +69,8 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
   }, [commNext]);
 
   useEffect(() => {
-    scrollToBottom()
-  }, []);
+    setTimeout(scrollToBottom, 500)
+  }, [artId]);
 
   //Input behaviour
   const [message, setMessage] = useState('');
@@ -122,7 +124,7 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
 
               return (
                 <li className={clsx("chat__comment", isAuth && (myId === comment?.user?.id) && 'chat__comment--yours')} key={comment.id}>
-                  <NavLink className="chat__comm-author" to='/'>{comment?.user?.username}</NavLink>
+                  <NavLink className="chat__comm-author" to={`/users/${comment?.user?.id}`}>{comment?.user?.username}</NavLink>
                   <p className="chat__comm-content">{comment.text}</p>
                   <p className="chat__comm-date">{formattedDate}</p>
                 </li>
@@ -137,6 +139,7 @@ const CommentsSection:FC<CommentsSectionProps> = ({height=STANDARD_HEIGHT, place
   return (
     <div className="comments">
       <Chat renderInput={renderInput} renderMsgs={() => renderComments()} height={height} data={comments}/>
+      {status === 'error' ? <div className="modal__error">Авторизируйтесь, чтобы оставить комментарий!</div> : null}
     </div>
   )
 }

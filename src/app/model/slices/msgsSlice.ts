@@ -66,6 +66,19 @@ const msgsSlice = createSlice({
       .addCase(fetchNewPage.rejected, (state) => {
         state.status = 'error';
       })
+
+    //fetchReadMessages
+    .addCase(fetchReadMessages.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(fetchReadMessages.fulfilled, (state, action) => {
+      console.log(action.payload)
+      console.log("read msgs fulfilled")
+      state.status = 'loaded';
+    })
+    .addCase(fetchReadMessages.rejected, (state) => {
+      state.status = 'error';
+    })
   }
 })
 

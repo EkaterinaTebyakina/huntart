@@ -45,11 +45,17 @@ const UserInfoSection:FC<UserInfoSectionProps> = ({userId, isMine, onSetPublishM
   const userSubscriptions = useSelector(selectUserSubscriptions);
   const userFollowers = useSelector(selectUserFollowers);
 
+  const [mine, setMine] = useState(false);
+
+  useEffect(() => {
+    setMine((myId == userId) ? true : false);
+  }, [myId, userId])
+
   useEffect(() => {
     // console.log(subscriptions)
     // console.log(userId)
     setIsMySubscription(!!subscriptions?.find(item => item.id == userId));
-  }, [subscriptions])
+  }, [subscriptions, userId])
 
   const onSubscribe = async (e) => {
     btnRef.current.disabled = true;
@@ -76,7 +82,7 @@ const UserInfoSection:FC<UserInfoSectionProps> = ({userId, isMine, onSetPublishM
       <div className="userinfosection">
         
         <div className="avatar-container">
-          {!isAuth || isMine ? null :
+          {!isAuth || isMine || mine ? null :
               <button className="subscribe-btn" ref={btnRef} onClick={(e) => onSubscribe(e)}>
                 {isMySubscription ? 
                   <FontAwesomeIcon icon={faCheck} className="subscribe__icon"/>

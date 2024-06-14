@@ -82,6 +82,7 @@ const artSlice = createSlice({
       .addCase(fetchArt.pending, (state) => {
         state.data = initialArt;
         state.status = 'loading';
+        state.statusLike = 'loading';
       })
       .addCase(fetchArt.fulfilled, (state, action) => {
         state.data = action.payload;
@@ -94,28 +95,29 @@ const artSlice = createSlice({
 
     //fetchSetLike
     .addCase(fetchSetLike.pending, (state) => {
-      state.status = 'loading';
+      state.statusLike = 'loading';
     })
     .addCase(fetchSetLike.fulfilled, (state) => {
       state.data.count_likes = state.data.count_likes + 1;
       state.data.liked_authorized_user = true;
-      state.status = 'loaded';
+      state.statusLike = 'loaded';
     })
-    .addCase(fetchSetLike.rejected, (state) => {
-      state.status = 'error';
+    .addCase(fetchSetLike.rejected, (state, action) => {
+      state.statusLike = 'error';
+      console.log(action)
     })
 
     //fetchUnsetLike
     .addCase(fetchUnsetLike.pending, (state) => {
-      state.status = 'loading';
+      state.statusLike = 'loading';
     })
     .addCase(fetchUnsetLike.fulfilled, (state) => {
       state.data.count_likes = state.data.count_likes - 1;
       state.data.liked_authorized_user = false;
-      state.status = 'loaded';
+      state.statusLike = 'loaded';
     })
     .addCase(fetchUnsetLike.rejected, (state) => {
-      state.status = 'error';
+      state.statusLike = 'error';
     })
 
     //fetchComments
@@ -178,6 +180,8 @@ export const selectCountLikes = createSelector(selectBase, state => state?.data?
 export const selectIsLiked = createSelector(selectBase, state => state?.data?.liked_authorized_user);
 
 export const selectStatus = createSelector(selectBase, state => state.status);
+export const selectLikeStatus = createSelector(selectBase, state => state.statusLike);
+export const selectCommStatus = createSelector(selectBase, state => state.comments?.status);
 
 export const selectComments = createSelector(selectBase, state => state?.comments?.items);
 

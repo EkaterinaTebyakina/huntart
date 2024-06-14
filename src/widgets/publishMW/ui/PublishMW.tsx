@@ -8,6 +8,8 @@ import "./PublishMW.scss";
 
 import { fetchNewArt, resetArtStatus, selectArtStatus, selectStatus } from "../../../app/model/slices/authSlice";
 import { renderMessage } from "../../../shared/ui/submitMessage/submitMessage";
+import { selectUserId } from "../../../app/model/slices/userSlice";
+import { fetchUserArts } from "../../../app/model/slices/artsSlice";
 
 interface PublishMWProps {
   onSetModalClose?(): void;
@@ -23,6 +25,7 @@ type Inputs = {
 const PublishMW:FC<PublishMWProps> = ({onSetModalClose}) => {
 
   const status = useSelector(selectArtStatus);
+  const userId = useSelector(selectUserId)
   const dispatch = useDispatch();
   const dispatchThunk = useDispatch<ThunkDispatch>();
 
@@ -57,7 +60,7 @@ const PublishMW:FC<PublishMWProps> = ({onSetModalClose}) => {
     formData.append('description', data.description);
     formData.append('for_sale', false);
     formData.append('tags', tagsArray);
-    dispatchThunk(fetchNewArt(formData));
+    dispatchThunk(fetchNewArt(formData)).then(res => dispatchThunk(fetchUserArts(userId)));
     reset();
     setSelectedFile(null)
   };

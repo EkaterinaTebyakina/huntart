@@ -4,6 +4,7 @@ import InterlocutorsList from "../../../shared/ui/interlocutorsList/Interlocutor
 import SearchInput from "../../../shared/ui/searchInput/SearchInput";
 import { IUser } from "../../../entities/User";
 import "./FollowersMW.scss";
+import { useNavigate } from "react-router-dom";
 
 
 interface FollowersMWProps {
@@ -14,10 +15,12 @@ interface FollowersMWProps {
 
 const FollowersMW:FC<FollowersMWProps> = ({userData, onSetModalClose}) => {
 
+  const navigate = useNavigate();
+  
   //search-block---------------------------------------------------------
 
   const interlocutorsData = userData;
-  console.log(interlocutorsData)
+  // console.log(interlocutorsData)
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -51,7 +54,11 @@ const FollowersMW:FC<FollowersMWProps> = ({userData, onSetModalClose}) => {
                       // isPopupOpen={isPopupOpen}
                       />
         </div>
-        <InterlocutorsList interlocutors={searchValue.length > 0 ? foundContent : interlocutorsData}/>
+        <div style={{overflowY: "auto", maxHeight: "480px"}}>
+          <InterlocutorsList interlocutors={searchValue.length > 0 ? foundContent : interlocutorsData}
+                            onSelect={(id) => {navigate(`/users/${id}`); onSetModalClose?.()}}/>
+        </div>
+        
       </div>
 
     </ModalWindow>

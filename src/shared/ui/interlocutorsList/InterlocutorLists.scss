@@ -16,4 +16,8 @@
   &:focus, &:focus-visible, &:active {
     background-color: $clr-green;
   }
+
+  &--active {
+    background-color: $clr-gray;
+  }
 }

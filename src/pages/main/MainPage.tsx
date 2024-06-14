@@ -43,7 +43,7 @@ const MainPage = () => {
 
   const [modalClose, setModalClose] = useState<boolean>(true);
   const [imgId, setImgId] = useState<number>();
-  const debounceImgId = useDeferredValue(imgId);
+  // const debounceImgId = useDeferredValue(imgId);
   const modalRef = useRef<HTMLDivElement>(null);
  
   useEffect(() => {
@@ -77,7 +77,7 @@ const MainPage = () => {
         <Gallery onSetModalOpen={onSetModalOpen}/>
         {modalClose ? null : 
           <div ref={modalRef}>
-            <ArtInfoMW imgId={debounceImgId} onSetModalClose={onSetModalClose}/>
+            <ArtInfoMW imgId={imgId} onSetModalClose={onSetModalClose}/>
           </div>
         }
       </main>

@@ -1,21 +1,19 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import InterlocutorItem from "../interlocutorItem/InterlocutorItem";
 import { IUser } from "../../../entities/User";
 import "./InterlocutorLists.scss";
-import { useNavigate } from "react-router-dom";
+import clsx from "clsx";
 
 interface InterlocutorsListProps {
   interlocutors: IUser[] | null;
-  onSelect?(): void;
+  onSelect(id?: string | null): void;
 }
 
 const InterlocutorsList:FC<InterlocutorsListProps> = ({interlocutors, onSelect}) => {
 
-  const navigate = useNavigate();
-
   const renderItems = () => {
     return interlocutors?.map(user => (
-      <li key={user?.id} className="interlocutor" onClick={() => navigate(`/messenger/${user?.id}`)}>
+      <li key={user?.id} className={clsx("interlocutor", user?.active && "interlocutor--active")} onClick={() => {onSelect(user?.id)}}>
         <InterlocutorItem id={user?.id} 
                           username={user?.username} 
                           avatar={user?.avatar}

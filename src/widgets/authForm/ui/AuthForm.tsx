@@ -7,6 +7,7 @@ import axios from 'axios';
 
 import "./AuthForm.scss";
 import { fetchAuth, fetchMe } from "../../../app/model/slices/authSlice";
+import { useChatWebsocket } from "../../../shared/api/useChatWebsocket";
 
 type Inputs = {
   username: string
@@ -17,6 +18,7 @@ const AuthForm = () => {
   const dispatch = useDispatch<ThunkDispatch>();
   const [error, setError] = useState('');
 
+  const { sendJsonMessage } = useChatWebsocket();
   const navigate = useNavigate();
 
   const {register, handleSubmit, formState: {errors}} = useForm<Inputs>({
@@ -28,18 +30,16 @@ const AuthForm = () => {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data)
-
     try {
-      console.log("Нажали на кнопку");
-
-      // dispatch(fetchAuth(data));
-
-      // const response = await dispatch(fetchAuth(data));
-      // console.log(response)
-
       const response = await axios.post('http://localhost:8000/api/v1/users/token/', data);
       const { access: token, refresh: refreshToken } = response.data;
+      sendJsonMessage({
+        "subsystem": "auth",
+        "action": "auth",
+        "headers": {
+             "jwt_access": token,
+         },
+      })
 
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);

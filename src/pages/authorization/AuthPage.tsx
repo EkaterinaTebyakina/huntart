@@ -1,5 +1,6 @@
 import Header from "../../widgets/header/ui/Header";
 import AuthForm from "../../widgets/authForm/ui/AuthForm";
+import "./AuthPage.scss";
 
 const AuthPage = () => {
 
@@ -8,7 +9,7 @@ const AuthPage = () => {
       <header className="header">
         <Header menuLinks={[{url:"/", name:"Главная"}, {url:"/registration", name:"Регистрация"}]}/>
       </header>
-      <main className="main">
+      <main className="main_auth">
         <AuthForm/>
       </main>
     </>

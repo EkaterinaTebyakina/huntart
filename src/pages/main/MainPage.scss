@@ -8,6 +8,7 @@ header {
 
 main {
   padding-top: 150px;
+  // overflow-y: scroll;
   @media (max-width: 480px) {
     padding-top: 234px;
   }

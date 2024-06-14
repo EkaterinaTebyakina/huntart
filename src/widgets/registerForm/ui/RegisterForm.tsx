@@ -8,6 +8,7 @@ import "../../authForm/ui/AuthForm.scss";
 type Inputs = {
   username: string
   password: string
+  confirm_password: string
 }
 
 const RegisterForm = () => {
@@ -15,10 +16,11 @@ const RegisterForm = () => {
 
   const navigate = useNavigate();
 
-  const {register, handleSubmit, formState: {errors}} = useForm<Inputs>({
+  const {register, handleSubmit, formState: {errors}, watch} = useForm<Inputs>({
     defaultValues: {
       username: '',
       password: '',
+      confirm_password: '',
     },
     mode: 'onChange'
   });
@@ -70,6 +72,26 @@ const RegisterForm = () => {
             />
         </div>
         {errors.password?.type === "required" && <p role="alert" className="alert-msg">{errors.password.message}</p>}
+
+        <div>
+          <label htmlFor="confirm_password">Подтвердите пароль:</label>
+          <input
+            id="confirm_password"
+            className="auth-form__password-input"
+            type="password" 
+            placeholder="Введите пароль" 
+            {...register( "confirm_password", {
+              required: "Данное поле обязательно для заполнения",
+              validate: (val: string) => {
+                if (watch('password') != val) {
+                  return "Пароли должны совпадать"
+                }
+              }
+            })}
+            aria-invalid={errors.password ? "true" : "false"} 
+            />
+        </div>
+        {errors.confirm_password && <p role="alert" className="alert-msg">{errors.confirm_password.message}</p>}
         
 
         <input type="submit" className="submit-btn" value={"Зарегистрироваться!"}/>

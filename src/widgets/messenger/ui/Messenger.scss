@@ -7,6 +7,11 @@
   flex-direction: column;
   // align-content: stretch;
   width: 840px;
+
+  @media (max-width: 600px) {
+    height: 300px;
+    width: 100%;
+  }
 }
 
 .chat {

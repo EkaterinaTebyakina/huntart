@@ -9,7 +9,7 @@ import ModalWindow from "../../../shared/ui/modalWindow/ModalWindow";
 import ImageSection from "../../imageSection/ui/ImageSection"
 import CommentsSection from "../../commentsSection/ui/CommentsSection";
 import instance from "../../../shared/api/axios";
-import { fetchArt, fetchComments, fetchSetLike, fetchUnsetLike, selectCountLikes, selectDescription, selectId, selectIsLiked, selectTags, selectViews } from "../../../app/model/slices/artSlice";
+import { fetchArt, fetchComments, fetchSetLike, fetchUnsetLike, selectCountLikes, selectDescription, selectId, selectIsLiked, selectLikeStatus, selectTags, selectViews } from "../../../app/model/slices/artSlice";
 import { selectMyId } from "../../../app/model/slices/authSlice";
 import { faEye, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,6 +29,8 @@ const ArtInfoModalWindow:FC<ArtInfoModalWindowProps> = ({imgId, onSetModalClose}
   const description = useSelector(selectDescription);
   const tags = useSelector(selectTags);
   const tagsStr = tags?.join(' ');
+  const statusLike = useSelector(selectLikeStatus);
+  console.log('statusLike', statusLike)
   
   const dispatchThunk  = useDispatch<ThunkDispatch>();
 
@@ -53,7 +55,7 @@ const ArtInfoModalWindow:FC<ArtInfoModalWindowProps> = ({imgId, onSetModalClose}
 
         <div className="modal__grid">
           <ImageSection/>
-          <CommentsSection/>
+          <CommentsSection artId={imgId}/>
         </div>
         {/* <div className="modal__views">
           {views}
@@ -64,7 +66,7 @@ const ArtInfoModalWindow:FC<ArtInfoModalWindowProps> = ({imgId, onSetModalClose}
           <div className="modal__views">
             {views}
             <span> </span>
-            <FontAwesomeIcon className={clsx("modal__like-icon", isLiked && "modal__like-icon--liked")} icon={faEye}/>
+            <FontAwesomeIcon className="modal__like-icon" icon={faEye}/>
           </div>
           <button className="modal__like-btn" onClick={() => onLike()}>
             {countLikes}
@@ -72,6 +74,7 @@ const ArtInfoModalWindow:FC<ArtInfoModalWindowProps> = ({imgId, onSetModalClose}
             <FontAwesomeIcon className={clsx("modal__like-icon", isLiked && "modal__like-icon--liked")} icon={faHeart}/>
           </button>
         </div>
+        {statusLike === 'error' ? <div className="modal__error">Авторизируйтесь, чтобы поставить лайк!</div> : null}
         {
           tagsStr ? 
           <div className="modal__tags">

@@ -8,7 +8,7 @@ export const renderMessage = (status : string) => {
       return (
         <div  className="submit-msg">
           <div>Данные успешно отправлены!</div>
-          <div>Обновите страницу, чтобы увидеть изменения с:</div>
+          {/* <div>Обновите страницу, чтобы увидеть изменения с:</div> */}
         </div>
       )
     case 'error':

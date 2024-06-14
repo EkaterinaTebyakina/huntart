@@ -20,6 +20,7 @@ const initialState = {
   status: 'loading',
   next: '',
   items: [],
+  activeChat: null,
 }
 
 const chatsSlice = createSlice({
@@ -28,6 +29,18 @@ const chatsSlice = createSlice({
   reducers: {
     addChat: (state, action) => {
       state.items = [...state.items, action.payload]
+    },
+    setActive: (state, action) => {
+      state.activeChat = action.payload;
+    },
+    setChatActive: (state, action) => {
+      const newArr = state.items?.map(item => {
+        if (item.id != action.payload) {
+          return {...item, active: false};
+        }
+        return {...item, active: true};
+      })
+      state.items = newArr;
     },
     setChatReaded: (state, action) => {
       const tempArr = state.items.slice();
@@ -56,12 +69,17 @@ const chatsSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchChats.fulfilled, (state, action) => {
-        const newChats = action.payload.results?.map(user => ({
-          id: user.user_id,
-          username: user.name,
-          avatar: user.avatar,
-          has_unread_messages: user.has_unread_messages,
-        }))
+        const newChats = action.payload.results?.map(user => {
+          const tempObj = {
+            id: user.user_id,
+            username: user.name,
+            avatar: user.avatar,
+            has_unread_messages: user.has_unread_messages,
+            active: false
+          }
+          if (state.activeChat && state.activeChat == user.user_id)  tempObj.active = true;
+          return  tempObj;
+        })
         state.items = newChats;
         state.next = action.payload.next;
         state.status = 'loaded';
@@ -76,12 +94,17 @@ const chatsSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchNewPage.fulfilled, (state, action) => {
-        const newChats = action.payload.results?.map(user => ({
-          id: user.user_id,
-          username: user.name,
-          avatar: user.avatar,
-          has_unread_messages: user.has_unread_messages,
-        }))
+        const newChats = action.payload.results?.map(user => {
+          const tempObj = {
+            id: user.user_id,
+            username: user.name,
+            avatar: user.avatar,
+            has_unread_messages: user.has_unread_messages,
+            active: false
+          }
+          if (state.activeChat && state.activeChat == user.user_id)  tempObj.active = true;
+          return  tempObj;
+        })
         state.items = [...state.items, ...newChats];
         state.next = action.payload.next;
         state.status = 'loaded';
@@ -103,5 +126,6 @@ const selectBase = createSelector(
 export const selectStatus = createSelector(selectBase, state => state.status);
 export const selectNext = createSelector(selectBase, state => state.next);
 export const selectChats = createSelector(selectBase, state => state.items);
+export const selectActiveChat = createSelector(selectBase, state => state.activeChat);
 
-export const {setChatReaded, setChatUnreaded, addChat} = chatsSlice.actions;
+export const {setChatReaded, setChatUnreaded, addChat, setChatActive, setActive} = chatsSlice.actions;

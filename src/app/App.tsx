@@ -13,14 +13,29 @@ import { MessengerPage } from "../pages/messenger/MessengerPage";
 import { fetchMe, selectIsAuth, selectStatus } from "./model/slices/authSlice";
 import { UserPage } from "../pages/user/UserPage";
 import { Messenger } from "../widgets/messenger/ui/Messenger";
-import useWebSocket from "react-use-websocket";
+import { ReadyState } from "react-use-websocket";
 import { SOCKET_URL } from "../shared/api/useChatWebsocket";
+import { useChatWebsocket } from "../shared/api/useChatWebsocket";
   
 function App() {
   const isAuth = useSelector(selectIsAuth)
   const status = useSelector(selectStatus)
-  // console.log("isAuth", isAuth)
-  // console.log("status", status)
+
+  const dispatch = useDispatch<ThunkDispatch>();
+  
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, [])
+
+  const { readyState } = useChatWebsocket();
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
+  console.log(connectionStatus)
 
   const router = createBrowserRouter([
     {
@@ -55,12 +70,6 @@ function App() {
       ],
     },
   ]);
-
-  const dispatch = useDispatch<ThunkDispatch>();
-  
-  useEffect(() => {
-    dispatch(fetchMe());
-  }, [])
 
   return (
     <>

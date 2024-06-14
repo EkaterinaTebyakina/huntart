@@ -9,6 +9,7 @@ import ModalWindow from "../../../shared/ui/modalWindow/ModalWindow";
 import FileForm from "../../../shared/ui/fileForm/FileForm";
 import { fetchProfile, resetProfileStatus, selectMyDescription, selectProfileStatus } from "../../../app/model/slices/authSlice";
 import { renderMessage } from "../../../shared/ui/submitMessage/submitMessage";
+import { fetchUser, selectUserId } from "../../../app/model/slices/userSlice";
 // import { useNavigate } from "react-router-dom";
 
 interface SettingProfileMWProps {
@@ -24,6 +25,7 @@ const SettingProfileMW:FC<SettingProfileMWProps> = ({onSetModalClose}) => {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   const status = useSelector(selectProfileStatus);
+  const userId = useSelector(selectUserId)
 
   //Files
   const dispatchThunk = useDispatch<ThunkDispatch>();
@@ -31,29 +33,30 @@ const SettingProfileMW:FC<SettingProfileMWProps> = ({onSetModalClose}) => {
   const onFetchAvatar = (file : File | null) => {
     const formData = new FormData();
     formData.append('avatar', file);
-    dispatchThunk(fetchProfile(formData))
+    dispatchThunk(fetchProfile(formData)).then(res => dispatchThunk(fetchUser(userId)))
+    
   }
 
   const onFetchWallpaper = (file : File | null) => {
     const formData = new FormData();
     formData.append('wallpaper', file);
-    dispatchThunk(fetchProfile(formData))
+    dispatchThunk(fetchProfile(formData)).then(res => dispatchThunk(fetchUser(userId)))
   }
   //End files
 
   //Description form
   const description = useSelector(selectMyDescription);
-  const [descr, setDescr] = useState(description);
+  const [descr, setDescr] = useState(description ?? "");
   const {register, handleSubmit, reset, formState: {errors}} = useForm<Inputs>();
 
   const handleChange = (e) => {
     setDescr(e.target.value)
-    console.log(descr)
+    // console.log(descr)
   }
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data)
-    dispatchThunk(fetchProfile(data));
+    dispatchThunk(fetchProfile(data)).then(res => dispatchThunk(fetchUser(userId)));
     reset();
   };
   //End description form

@@ -9,7 +9,7 @@ import { selectIsAuth, selectMyId, selectStatus } from "../../app/model/slices/a
 import { IUser } from "../../entities/User";
 import SearchInput from "../../shared/ui/searchInput/SearchInput";
 import InterlocutorsList from "../../shared/ui/interlocutorsList/InterlocutorsList";
-import { fetchChats, selectChats } from "../../app/model/slices/chatsSlice";
+import { fetchChats, selectChats, setChatActive } from "../../app/model/slices/chatsSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import SearchField from "../../shared/ui/searchField/SearchField";
 import { fetchAuthors, selectAuthors } from "../../app/model/slices/authorsSlice";
@@ -44,7 +44,7 @@ export const MessengerPage = () => {
   }, [])
 
   const interlocutorsData = useSelector(selectChats);
-  // console.log(interlocutorsData)
+  // console.log("interlocutorsData", interlocutorsData)
 
   //search-block---------------------------------------------------------
   const [searchValue, setSearchValue] = useState('');
@@ -96,7 +96,8 @@ export const MessengerPage = () => {
                           placeholder="Введите имя пользователя"/>
           </div>
           
-          <InterlocutorsList interlocutors={interlocutorsData}/>
+          <InterlocutorsList interlocutors={interlocutorsData}
+                             onSelect={(id) => { dispatch(setChatActive(id)); navigate(`/messenger/${id}`)}}/>
           
         </div>
 

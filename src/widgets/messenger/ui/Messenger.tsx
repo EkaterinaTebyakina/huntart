@@ -1,27 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { selectIsAuth, selectMyId } from "../../../app/model/slices/authSlice";
-import InterlocutorItem from "../../../shared/ui/interlocutorItem/InterlocutorItem";
-import CommentsSection from "../../commentsSection/ui/CommentsSection";
-import { selectAuthors } from "../../../app/model/slices/authorsSlice";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import clsx from "clsx";
+import useWebSocket from "react-use-websocket";
+
+import "./Messenger.scss"
+
 import Chat from "../../../shared/ui/chat/Chat";
 import Message from "../../../shared/ui/message/Message";
-import "./Messenger.scss"
+import InterlocutorItem from "../../../shared/ui/interlocutorItem/InterlocutorItem";
+import { SOCKET_URL, useChatWebsocket } from "../../../shared/api/useChatWebsocket";
+import { selectIsAuth, selectMyId } from "../../../app/model/slices/authSlice";
 import { fetchMessages, fetchNewPage, fetchReadMessages, selectMsgs, selectNext, setNewMsg } from "../../../app/model/slices/msgsSlice";
-import useWebSocket from "react-use-websocket";
-import { SOCKET_URL } from "../../../shared/api/useChatWebsocket";
-import { addChat, fetchChats, selectChats, setChatReaded, setChatUnreaded } from "../../../app/model/slices/chatsSlice";
-
-// import {socket} from "../../../app/App"
-// import {sendJsonMessage} from "../../../shared/api/useChatWebsocket"
+import { fetchChats, selectChats, setActive, setChatActive, setChatReaded, setChatUnreaded } from "../../../app/model/slices/chatsSlice";
 
 export const Messenger = () => {
 
-  const navigate = useNavigate();
+  const {sendJsonMessage, lastJsonMessage} = useChatWebsocket();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const dispatchThunk = useDispatch<ThunkDispatch>();
 
@@ -31,29 +29,15 @@ export const Messenger = () => {
   const isAuth = useSelector(selectIsAuth);
   const myId = useSelector(selectMyId);
 
-  //Создаем сокет
-  const {sendJsonMessage, lastJsonMessage} = useWebSocket(SOCKET_URL, {
-    share: true,
-    shouldReconnect: (closeEvent) => true,
-    onOpen: () => {
-      console.log('opened')
-      sendJsonMessage({
-        "subsystem": "auth",
-        "action": "auth",
-        "headers": {
-             "jwt_access": token,
-         },
+  useEffect(() => {
+    sendJsonMessage({
+      "subsystem": "auth",
+      "action": "auth",
+      "headers": {
+           "jwt_access": token,
+       },
     })
-    },
-    onError: (e) => {
-      console.log("Websocket error")
-      console.log(e)
-    },
-    onClose: (e) => {
-      console.log("Websocket closed")
-      console.log(e)
-    }
-  })
+  }, [])
 
   //UseEffect, зависящий от lastJsonMessage
   useEffect(() => {
@@ -112,9 +96,10 @@ export const Messenger = () => {
       }
     }
     if (userId != "id") {
+      console.log("active")
+      dispatch(setActive(userId))
       fetchInterlocutor();
-      dispatchThunk(fetchMessages(userId))
-      dispatchThunk(fetchReadMessages(userId))
+      dispatchThunk(fetchMessages(userId)).then(res => dispatchThunk(fetchReadMessages(userId)))
       dispatch(setChatReaded(userId))
     }
   }, [userId])
@@ -188,8 +173,8 @@ export const Messenger = () => {
   }, [nextPage]);
 
   useEffect(() => {
-    scrollToBottom()
-  }, []);
+    setTimeout(scrollToBottom, 500)
+  }, [userId]);
 
   //Создаем само окошко чата
   const messages = useSelector(selectMsgs);
@@ -207,10 +192,12 @@ export const Messenger = () => {
               let mm = date.getMonth() + 1; // Months start at 0!
               let dd = date.getDate();
               if (dd < 10) dd = '0' + dd;
-              if (mm < 10) mm = '0' + mm;
+              if (mm < 10) mm = '0' + mm;              
               
-              const hour = date.getHours();
-              const min = date.getMinutes();
+              let hour = date.getHours();
+              let min = date.getMinutes();
+              if (hour < 10) hour = '0' + hour;
+              if (min < 10) min = '0' + min;
 
               const formattedDate = `${hour}:${min} ${dd}.${mm}.${yyyy}`;
 
@@ -222,6 +209,7 @@ export const Messenger = () => {
               )
             })
           }
+          {/* <div ref={msgsEndRef}/> */}
         </ul>
       )
   }

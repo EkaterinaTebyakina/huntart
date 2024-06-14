@@ -12,6 +12,8 @@
   border-radius: 30px;
   font-size: 16px;
 
+  overflow-y: auto;
+
   @media (min-width: 720px) {
 
     & {
@@ -33,6 +35,12 @@
       }
     }  
   }
+}
+
+.found-list {
+  max-height: 320px;
+  // overflow-y: auto;
+  // padding-bottom: 12px;
 }
 
 .found-list__item{
