@@ -13,7 +13,7 @@ import Message from "../../../shared/ui/message/Message";
 import InterlocutorItem from "../../../shared/ui/interlocutorItem/InterlocutorItem";
 import { SOCKET_URL, useChatWebsocket } from "../../../shared/api/useChatWebsocket";
 import { selectIsAuth, selectMyId } from "../../../app/model/slices/authSlice";
-import { fetchMessages, fetchNewPage, fetchReadMessages, selectMsgs, selectNext, setNewMsg } from "../../../app/model/slices/msgsSlice";
+import { fetchMessages, fetchNewPage, fetchReadMessages, selectMsgs, selectNext, selectStatus, setNewMsg } from "../../../app/model/slices/msgsSlice";
 import { fetchChats, selectChats, setActive, setChatActive, setChatReaded, setChatUnreaded } from "../../../app/model/slices/chatsSlice";
 
 export const Messenger = () => {
@@ -151,6 +151,7 @@ export const Messenger = () => {
   const nextPage = useSelector(selectNext)
   const scrollRef = useRef(null);
   const msgsEndRef = useRef(null)
+  const status = useSelector(selectStatus);
 
   const scrollToBottom = () => {
     msgsEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -159,7 +160,7 @@ export const Messenger = () => {
   const handleScroll = useCallback((e) => {
     let scrollBottom = Math.floor(e.target.scrollHeight + e.target.scrollTop - e.target.clientHeight);
 
-    if (scrollBottom <= 4 && nextPage) {
+    if (scrollBottom <= 4 && nextPage && (status != 'loading')) {
       dispatchThunk(fetchNewPage())
     }
   }, [nextPage]);

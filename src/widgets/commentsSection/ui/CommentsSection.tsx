@@ -52,7 +52,7 @@ const CommentsSection:FC<CommentsSectionProps> = ({artId, height=STANDARD_HEIGHT
     if (scrollBottom <= 4) {
       console.log('scrolled to top')
       console.log(commNext)
-      if (commNext) {
+      if (commNext && (status != 'loading')) {
         dispatch(fetchNextComments())
       } else {
         console.log('доскроллили до конца');

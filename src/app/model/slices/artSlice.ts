@@ -62,7 +62,7 @@ const initialState = {
   data: initialArt,
   comments: initialComments,
   status: 'loading',
-  statusLike: 'loading'
+  statusLike: 'loading',
 }
 
 const artSlice = createSlice({
