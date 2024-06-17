@@ -10,7 +10,7 @@ export const fetchChats = createAsyncThunk('chats/fetchChats', async () => {
 
 export const fetchNewPage = createAsyncThunk('chats/fetchNewPage', async (args, { getState }) => {
   const state = getState();
-  const url = state.chats.next.slice(28);
+  const url = state.chats.next.replace('http://80.78.242.175:8000/api/v1', '');
   const { data } = await instance.get(url);
   // console.log(data)
   return data;

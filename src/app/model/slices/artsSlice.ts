@@ -64,7 +64,7 @@ export const fetchUserArts = createAsyncThunk('arts/fetchUserArts', async (id) =
 
 export const fetchNewPage = createAsyncThunk('arts/fetchNewPage', async (args, { getState }) => {
   const state = getState();
-  const url = state.arts.arts.next.slice(28);
+  const url = state.arts.arts.next.replace('http://80.78.242.175:8000/api/v1', '');
   const { data } = await instance.get(url);
 
   return data;
@@ -160,6 +160,7 @@ const artsSlice = createSlice({
     //fetchUserArts
       .addCase(fetchUserArts.pending, (state) => {
         state.arts.items = [];
+        state.arts.next = null;
         state.arts.status = 'loading';
       })
       .addCase(fetchUserArts.fulfilled, (state, action) => {
@@ -169,6 +170,7 @@ const artsSlice = createSlice({
       })
       .addCase(fetchUserArts.rejected, (state, action) => {
         state.arts.items = [];
+        state.arts.next = null;
         state.arts.status = 'error';
         state.arts.error = action.error.message;
       })

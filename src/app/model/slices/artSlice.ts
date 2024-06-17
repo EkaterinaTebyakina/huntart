@@ -5,13 +5,11 @@ import { RootState } from "../store";
 //ART
 export const fetchArt = createAsyncThunk('art/fetchArt', async (id) => {
   const { data } = await instance.get(`/arts/${id}/`);
-  // console.log(data)
   return data;
 })
 //LIKE
 export const fetchSetLike = createAsyncThunk('art/fetchSetLike', async (id) => {
   const { data } = await instance.post(`/arts/${id}/like/`);
-  // console.log(data)
   return data;
 })
 export const fetchUnsetLike = createAsyncThunk('art/fetchUnsetLike', async (id) => {
@@ -27,7 +25,7 @@ export const fetchComments = createAsyncThunk('art/fetchComments', async (id) =>
 })
 export const fetchNextComments = createAsyncThunk('arts/fetchNextComments', async (args, { getState }) => {
   const state = getState();
-  const url = state.art.comments.next.slice(28);
+  const url = state.art.comments.next.replace('http://80.78.242.175:8000/api/v1', '');
   // console.log("url", url)
   const { data } = await instance.get(url);
 
@@ -37,7 +35,6 @@ export const fetchComment = createAsyncThunk('art/fetchComment', async ({id, tex
   const { data } = await instance.post(`/arts/${id}/comments/`, {
     text,
   });
-  // console.log(data)
   return data;
 })
 

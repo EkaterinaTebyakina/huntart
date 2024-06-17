@@ -15,7 +15,7 @@ export const fetchAuthors = createAsyncThunk('authors/fetchAuthors', async (user
 })
 export const fetchNewPage = createAsyncThunk('authors/fetchNewPage', async (args, { getState }) => {
   const state = getState();
-  const url = state.authors.next.slice(28);
+  const url = state.authors.next.replace('http://80.78.242.175:8000/api/v1', '');
   const { data } = await instance.get(url);
 
   return data;

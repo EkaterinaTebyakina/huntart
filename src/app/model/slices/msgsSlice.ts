@@ -10,7 +10,7 @@ export const fetchMessages = createAsyncThunk('msgs/fetchMessages', async (id) =
 
 export const fetchNewPage = createAsyncThunk('msgs/fetchNewPage', async (args, { getState }) => {
   const state = getState();
-  const url = state.msgs.next.slice(28);
+  const url = state.msgs.next.replace('http://80.78.242.175:8000/api/v1', '');
   const { data } = await instance.get(url);
   console.log("fetchNewPageMsgs", data)
   return data;
