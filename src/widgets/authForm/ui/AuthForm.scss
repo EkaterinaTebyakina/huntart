@@ -2,8 +2,8 @@
 
 .auth-wrapper {
   @extend %base-elem-styles;
-  width: 80%;
-  // min-width: 500px;
+  // width: 80%;
+  // width: 500px;
   margin: 0 auto;
   padding: 20px;
   border-radius: 20px;
@@ -82,9 +82,9 @@
   border-radius: 16px;
 }
 
-@media (min-width: 480px) {
+@media (min-width: 520px) {
   .auth-wrapper {
-    width: 480px;
+    width: 500px;
     
     h1 {
       font-size: 24px;

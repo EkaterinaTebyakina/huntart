@@ -59,7 +59,6 @@ export const fetchUserArts = createAsyncThunk('arts/fetchUserArts', async (id) =
       page_size: 15
     }});
 
-  // console.log(data)
   return data;
 })
 
@@ -71,11 +70,26 @@ export const fetchNewPage = createAsyncThunk('arts/fetchNewPage', async (args, {
   return data;
 })
 
-const initialState = {
+export interface IArtsState {
+  arts: {
+    items: []
+    status: string
+    error: string | undefined
+    next: string | null
+  },
+  feedName: string
+  search: {
+    username: string
+    tags: []
+  }
+}
+
+const initialState : IArtsState = {
   arts: {
     items: [],
     status: 'loading',
-    next: '',
+    error: '',
+    next: null,
   },
   feedName: 'новые работы',
   search: {
@@ -153,9 +167,10 @@ const artsSlice = createSlice({
         state.arts.next = action.payload.next;
         state.arts.status = 'loaded';
       })
-      .addCase(fetchUserArts.rejected, (state) => {
+      .addCase(fetchUserArts.rejected, (state, action) => {
         state.arts.items = [];
         state.arts.status = 'error';
+        state.arts.error = action.error.message;
       })
 
     //fetchNewPage

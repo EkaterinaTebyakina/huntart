@@ -41,6 +41,11 @@
   max-height: 320px;
   // overflow-y: auto;
   // padding-bottom: 12px;
+  @media (max-width: 480px) {
+    & {
+      max-height: 80px;
+    }
+  }
 }
 
 .found-list__item{

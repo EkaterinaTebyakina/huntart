@@ -122,7 +122,7 @@ const PublishMW:FC<PublishMWProps> = ({onSetModalClose}) => {
           // onChange={e => handleChange(e)}
           />
         
-        <input type="submit" className="submit-btn"/>
+        <input type="submit" className="submit-btn" value="Отправить"/>
         {renderMessage(status)}
         {/* {isSubmitSuccessful && <p style={{textAlign: "center", margin: "10px auto", fontWeight: "700"}}>Данные успешно отправлены</p>} */}
       </form>
