@@ -6,7 +6,7 @@ const setParams = (author: string, tags: string[]) => {
 
   const params = new URLSearchParams();
 
-  params.append('page_size', '15')
+  params.append('page_size', '20')
 
   if (author != '') {
     console.log(author)
@@ -56,7 +56,7 @@ export const fetchSubscriptionsArts = createAsyncThunk('arts/fetchSubscriptionsA
 export const fetchUserArts = createAsyncThunk('arts/fetchUserArts', async (id) => {
   const { data } = await instance.get(`/arts/users/${id}/`, { 
     params: {
-      page_size: 15
+      page_size: 20
     }});
 
   return data;
