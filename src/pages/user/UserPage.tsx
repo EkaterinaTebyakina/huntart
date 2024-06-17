@@ -13,7 +13,7 @@ import Wallpaper from "../../shared/ui/wallpaper/Wallpaper";
 import { fetchUser } from "../../app/model/slices/userSlice";
 import UserInfoSection from "../../widgets/userInfoSection/ui/UserInfoSection";
 import FollowersMW from "../../widgets/followersMW/ui/FollowersMW";
-import { fetchNewPage, fetchUserArts, selectNext } from "../../app/model/slices/artsSlice";
+import { fetchNewPage, fetchUserArts, selectNext, selectStatus } from "../../app/model/slices/artsSlice";
 import SettingProfileMW from "../../widgets/settingProfileMW/ui/SettingProfileMW";
 import PublishMW from "../../widgets/publishMW/ui/PublishMW";
 import { IUser } from "../../entities/User";
@@ -24,7 +24,8 @@ export const UserPage = () => {
   const dispatchThunk = useDispatch<ThunkDispatch>();
 
   const nextUrl = useSelector(selectNext);
-  useBottomScrollListener(() => nextUrl ? dispatchThunk(fetchNewPage()) : console.log('доскроллили до конца'));
+  const status = useSelector(selectStatus);
+  useBottomScrollListener(() =>(nextUrl && (status != 'loading')) ? dispatchThunk(fetchNewPage()) : console.log('доскроллили до конца'));
 
   const isAuth = useSelector(selectIsAuth);
   const myId = useSelector(selectMyId);

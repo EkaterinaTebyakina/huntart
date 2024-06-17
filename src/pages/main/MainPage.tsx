@@ -10,7 +10,7 @@ import Header from "../../widgets/header/ui/Header";
 import FeedsSwitcher from "../../widgets/feedsSwitcher/ui/FeedsSwitcher";
 import Gallery from "../../widgets/gallery/ui/Gallery";
 import ArtInfoMW from "../../widgets/artInfoMW/ui/ArtInfoMW";
-import { fetchNewArts, fetchNewPage, selectNext } from "../../app/model/slices/artsSlice";
+import { fetchNewArts, fetchNewPage, selectNext, selectStatus } from "../../app/model/slices/artsSlice";
 import { selectIsAuth, selectMyId } from "../../app/model/slices/authSlice";
 import FiltersField from "../../widgets/filtersField/ui/FiltersField";
 
@@ -18,7 +18,8 @@ const MainPage = () => {
 
   const dispatch  = useDispatch<ThunkDispatch>();
   const nextUrl = useSelector(selectNext);
-  useBottomScrollListener(() => nextUrl ? dispatch(fetchNewPage()) : console.log('доскроллили до конца'));
+  const status = useSelector(selectStatus);
+  useBottomScrollListener(() => (nextUrl && (status != 'loading')) ? dispatch(fetchNewPage()) : console.log('доскроллили до конца'));
 
   const isAuth = useSelector(selectIsAuth);
   const myId = useSelector(selectMyId);
